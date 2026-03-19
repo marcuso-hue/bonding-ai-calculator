@@ -46,7 +46,11 @@ export default function App() {
 
   // ─── Prices ──
   const sellPrice = useCallback(
-    (name) => (cur === "USD" ? SELL[name] || 0 : SELL_BRL[name] || 0),
+    (name) => {
+      const roleItem = ROLES.find((r) => r.name === name);
+      if (!roleItem) return 0;
+      return cur === "USD" ? roleItem.usd || 0 : roleItem.brl || 0;
+    },
     [cur],
   );
   const costPrice = useCallback(
@@ -738,13 +742,13 @@ export default function App() {
                                 >
                                   {CATS.map((cat) => (
                                     <optgroup key={cat} label={cat}>
-                                      {ROLES_LIST.filter(
-                                        (r) => r.cat === cat,
-                                      ).map((r) => (
-                                        <option key={r.name} value={r.name}>
-                                          {r.name}
-                                        </option>
-                                      ))}
+                                      {ROLES.filter((r) => r.cat === cat).map(
+                                        (r) => (
+                                          <option key={r.name} value={r.name}>
+                                            {r.name}
+                                          </option>
+                                        ),
+                                      )}
                                     </optgroup>
                                   ))}
                                 </select>
